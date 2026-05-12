@@ -19,7 +19,9 @@ import protect.card_locker.LoyaltyCardCursorAdapter.CardAdapterListener
 import protect.card_locker.databinding.ActivityManageGroupBinding
 import protect.card_locker.preferences.Settings
 
-class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
+class ManageGroupActivity :
+    CatimaAppCompatActivity(),
+    CardAdapterListener {
     private lateinit var binding: ActivityManageGroupBinding
     private lateinit var mDatabase: SQLiteDatabase
     private lateinit var mAdapter: ManageGroupCursorAdapter
@@ -61,8 +63,9 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
             }
         }
 
-        val groupId = intent.getStringExtra("group")
-            ?: throw (IllegalArgumentException("this activity expects a group loaded into it's intent"))
+        val groupId =
+            intent.getStringExtra("group")
+                ?: throw (IllegalArgumentException("this activity expects a group loaded into it's intent"))
         Log.d("groupId", "groupId: $groupId")
         mGroup = DBHelper.getGroup(mDatabase, groupId)
             ?: throw IllegalArgumentException("Cannot load group $groupId from database")
@@ -75,15 +78,16 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
         if (inputSavedInstanceState != null) {
             mAdapter.importInGroupState(
                 bundleToAdapterState(
-                    adapterStateBundle = inputSavedInstanceState.getBundle(
-                        SAVE_INSTANCE_ADAPTER_STATE
-                    )
-                )
+                    adapterStateBundle =
+                        inputSavedInstanceState.getBundle(
+                            SAVE_INSTANCE_ADAPTER_STATE,
+                        ),
+                ),
             )
             mGroupNameText.setText(
                 inputSavedInstanceState.getString(
-                    SAVE_INSTANCE_CURRENT_GROUP_NAME
-                )
+                    SAVE_INSTANCE_CURRENT_GROUP_NAME,
+                ),
             )
         }
 
@@ -94,20 +98,22 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
             if (currentGroupName != mGroup._id) {
                 when {
                     currentGroupName.isEmpty() -> {
-                        Toast.makeText(
-                            applicationContext,
-                            R.string.group_name_is_empty,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast
+                            .makeText(
+                                applicationContext,
+                                R.string.group_name_is_empty,
+                                Toast.LENGTH_SHORT,
+                            ).show()
                         return@setOnClickListener
                     }
 
                     !mGroupNameNotInUse -> {
-                        Toast.makeText(
-                            applicationContext,
-                            R.string.group_name_already_in_use,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast
+                            .makeText(
+                                applicationContext,
+                                R.string.group_name_already_in_use,
+                                Toast.LENGTH_SHORT,
+                            ).show()
                         return@setOnClickListener
                     }
                 }
@@ -117,11 +123,12 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
             if (currentGroupName != mGroup._id) {
                 DBHelper.updateGroup(mDatabase, mGroup._id, currentGroupName)
             }
-            Toast.makeText(
-                applicationContext,
-                R.string.group_updated,
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast
+                .makeText(
+                    applicationContext,
+                    R.string.group_updated,
+                    Toast.LENGTH_SHORT,
+                ).show()
             finish()
         }
         // this setText is here because content_main.xml is reused from main activity
@@ -130,11 +137,12 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
 
         onBackPressedDispatcher.addCallback(
             owner = this,
-            onBackPressedCallback = object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    leaveWithoutSaving()
-                }
-            }
+            onBackPressedCallback =
+                object : OnBackPressedCallback(true) {
+                    override fun handleOnBackPressed() {
+                        leaveWithoutSaving()
+                    }
+                },
         )
 
         // Apply column count setting to card list
@@ -146,21 +154,23 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
     }
 
     private fun adapterStateToBundle(adapterState: HashMap<Int, Boolean>): Bundle {
-        val adapterStateBundle = Bundle().apply {
-            for (entry in adapterState.entries) {
-                putBoolean(entry.key.toString(), entry.value)
+        val adapterStateBundle =
+            Bundle().apply {
+                for (entry in adapterState.entries) {
+                    putBoolean(entry.key.toString(), entry.value)
+                }
             }
-        }
         return adapterStateBundle
     }
 
     private fun bundleToAdapterState(adapterStateBundle: Bundle?): Map<Int, Boolean> {
         adapterStateBundle ?: return emptyMap()
-        val adapterStateMap = buildMap {
-            for (key in adapterStateBundle.keySet()) {
-                put(key.toInt(), adapterStateBundle.getBoolean(key))
+        val adapterStateMap =
+            buildMap {
+                for (key in adapterStateBundle.keySet()) {
+                    put(key.toInt(), adapterStateBundle.getBoolean(key))
+                }
             }
-        }
         return adapterStateMap
     }
 
@@ -188,7 +198,7 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
 
         outState.putBundle(
             SAVE_INSTANCE_ADAPTER_STATE,
-            adapterStateToBundle(mAdapter.exportInGroupState())
+            adapterStateToBundle(mAdapter.exportInGroupState()),
         )
         outState.putString(SAVE_INSTANCE_CURRENT_GROUP_NAME, mGroupNameText.text.toString())
     }
@@ -207,16 +217,18 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
 
     private fun leaveWithoutSaving() {
         if (hasChanged()) {
-            MaterialAlertDialogBuilder(this@ManageGroupActivity).apply {
-                setTitle(R.string.leaveWithoutSaveTitle)
-                setMessage(R.string.leaveWithoutSaveConfirmation)
-                setPositiveButton(R.string.confirm) { dialog: DialogInterface, _ ->
-                    finish()
-                }
-                setNegativeButton(R.string.cancel) { dialog: DialogInterface, _ ->
-                    dialog.dismiss()
-                }
-            }.create().show()
+            MaterialAlertDialogBuilder(this@ManageGroupActivity)
+                .apply {
+                    setTitle(R.string.leaveWithoutSaveTitle)
+                    setMessage(R.string.leaveWithoutSaveConfirmation)
+                    setPositiveButton(R.string.confirm) { dialog: DialogInterface, _ ->
+                        finish()
+                    }
+                    setNegativeButton(R.string.cancel) { dialog: DialogInterface, _ ->
+                        dialog.dismiss()
+                    }
+                }.create()
+                .show()
         } else {
             finish()
         }
@@ -227,9 +239,7 @@ class ManageGroupActivity : CatimaAppCompatActivity(), CardAdapterListener {
         return true
     }
 
-    private fun hasChanged(): Boolean {
-        return mAdapter.hasChanged() || mGroup._id != mGroupNameText.text.trim().toString()
-    }
+    private fun hasChanged(): Boolean = mAdapter.hasChanged() || mGroup._id != mGroupNameText.text.trim().toString()
 
     override fun onRowLongClicked(inputPosition: Int) {
         mAdapter.toggleSelection(inputPosition)

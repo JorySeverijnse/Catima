@@ -20,6 +20,6 @@ interface Exporter {
         context: Context,
         database: SQLiteDatabase,
         output: OutputStream,
-        password: CharArray
+        password: CharArray,
     )
 }

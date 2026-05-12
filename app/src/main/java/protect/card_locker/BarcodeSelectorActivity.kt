@@ -23,21 +23,23 @@ import protect.card_locker.databinding.BarcodeSelectorActivityBinding
  * the data. The user may then select any barcode, where its
  * data and type will be returned to the caller.
  */
-class BarcodeSelectorActivity : CatimaAppCompatActivity(), BarcodeSelectorListener, MenuProvider {
-    
+class BarcodeSelectorActivity :
+    CatimaAppCompatActivity(),
+    BarcodeSelectorListener,
+    MenuProvider {
     private lateinit var binding: BarcodeSelectorActivityBinding
     private lateinit var mAdapter: BarcodeSelectorAdapter
-    
+
     companion object {
         private const val TAG = "Catima"
-        
+
         // Result this activity will return
         const val BARCODE_CONTENTS = "contents"
         const val BARCODE_FORMAT = "format"
-        
+
         const val INPUT_DELAY = 250L
     }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         addMenuProvider(this)
@@ -47,13 +49,13 @@ class BarcodeSelectorActivity : CatimaAppCompatActivity(), BarcodeSelectorListen
         Utils.applyWindowInsets(binding.getRoot())
         setSupportActionBar(binding.toolbar)
         enableToolbarBackButton()
-        
+
         var typingDelayJob: Job? = null
         val cardId = binding.cardId
         val mBarcodeList = binding.barcodes
         mAdapter = BarcodeSelectorAdapter(this, ArrayList<CatimaBarcodeWithValue?>(), this)
         mBarcodeList.adapter = mAdapter
-        
+
         cardId.doOnTextChanged { s, _, _, _ ->
             typingDelayJob?.cancel()
             typingDelayJob =
@@ -63,15 +65,14 @@ class BarcodeSelectorActivity : CatimaAppCompatActivity(), BarcodeSelectorListen
                     generateBarcodes(s.toString())
                 }
         }
-        
+
         val initialCardId = intent.extras?.getString(LoyaltyCard.BUNDLE_LOYALTY_CARD_CARD_ID)
-        
+
         initialCardId?.let {
             cardId.setText(initialCardId)
         } ?: generateBarcodes("")
-        
     }
-    
+
     private fun generateBarcodes(value: String?) {
         // Update barcodes
         val barcodes = ArrayList<CatimaBarcodeWithValue?>()
@@ -81,32 +82,38 @@ class BarcodeSelectorActivity : CatimaAppCompatActivity(), BarcodeSelectorListen
         }
         mAdapter.setBarcodes(barcodes)
     }
-    
-    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {}
-    
+
+    override fun onCreateMenu(
+        menu: Menu,
+        menuInflater: MenuInflater,
+    ) {}
+
     override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
         if (menuItem.itemId == android.R.id.home) {
             setResult(RESULT_CANCELED)
             finish()
         }
-        
+
         return true
     }
-    
-    override fun onRowClicked(inputPosition: Int, view: View) {
+
+    override fun onRowClicked(
+        inputPosition: Int,
+        view: View,
+    ) {
         val barcodeWithValue = mAdapter.getItem(inputPosition)
         val catimaBarcode = barcodeWithValue!!.catimaBarcode()
-        
+
         if (!mAdapter.isValid(view)) {
             Toast.makeText(this, getString(R.string.wrongValueForBarcodeType), Toast.LENGTH_LONG).show()
             return
         }
-        
+
         val barcodeFormat = catimaBarcode.format().name
         val value = barcodeWithValue.value()
-        
+
         Log.d(TAG, "Selected barcode type $barcodeFormat")
-        
+
         Intent().apply {
             putExtra(BARCODE_FORMAT, barcodeFormat)
             putExtra(BARCODE_CONTENTS, value)
@@ -114,5 +121,4 @@ class BarcodeSelectorActivity : CatimaAppCompatActivity(), BarcodeSelectorListen
         }
         finish()
     }
-    
 }

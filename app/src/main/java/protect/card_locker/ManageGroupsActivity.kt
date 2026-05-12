@@ -22,7 +22,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import protect.card_locker.GroupCursorAdapter.GroupAdapterListener
 import protect.card_locker.databinding.ManageGroupsActivityBinding
 
-class ManageGroupsActivity : CatimaAppCompatActivity(), GroupAdapterListener {
+class ManageGroupsActivity :
+    CatimaAppCompatActivity(),
+    GroupAdapterListener {
     private lateinit var binding: ManageGroupsActivityBinding
     private lateinit var mDatabase: SQLiteDatabase
     private lateinit var mHelpText: TextView
@@ -81,10 +83,11 @@ class ManageGroupsActivity : CatimaAppCompatActivity(), GroupAdapterListener {
     }
 
     private fun invalidateHomescreenActiveTab() {
-        val activeTabPref = getSharedPreferences(
-            getString(R.string.sharedpreference_active_tab),
-            MODE_PRIVATE
-        )
+        val activeTabPref =
+            getSharedPreferences(
+                getString(R.string.sharedpreference_active_tab),
+                MODE_PRIVATE,
+            )
         activeTabPref.edit {
             putInt(getString(R.string.sharedpreference_active_tab), 0)
         }
@@ -107,16 +110,18 @@ class ManageGroupsActivity : CatimaAppCompatActivity(), GroupAdapterListener {
         // Layout
         val layout = LinearLayout(this)
         layout.orientation = LinearLayout.VERTICAL
-        val params = LinearLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        ).apply {
-            val contentPadding =
-                resources.getDimensionPixelSize(R.dimen.alert_dialog_content_padding)
-            leftMargin = contentPadding
-            topMargin = contentPadding / 2
-            rightMargin = contentPadding
-        }
+        val params =
+            LinearLayout
+                .LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                ).apply {
+                    val contentPadding =
+                        resources.getDimensionPixelSize(R.dimen.alert_dialog_content_padding)
+                    leftMargin = contentPadding
+                    topMargin = contentPadding / 2
+                    rightMargin = contentPadding
+                }
 
         // EditText with spacing
         val input = EditText(this)
@@ -173,18 +178,22 @@ class ManageGroupsActivity : CatimaAppCompatActivity(), GroupAdapterListener {
         return groupNameTextView.text.toString()
     }
 
-    private fun moveGroup(view: View, up: Boolean) {
+    private fun moveGroup(
+        view: View,
+        up: Boolean,
+    ) {
         val groups = DBHelper.getGroups(mDatabase)
         val groupName = getGroupName(view)
 
         val currentIndex = DBHelper.getGroup(mDatabase, groupName).order
 
         // Reinsert group in correct position
-        val newIndex: Int = if (up) {
-            currentIndex - 1
-        } else {
-            currentIndex + 1
-        }
+        val newIndex: Int =
+            if (up) {
+                currentIndex - 1
+            } else {
+                currentIndex + 1
+            }
 
         // Don't try to move out of bounds
         if (newIndex < 0 || newIndex >= groups.size) {
@@ -222,19 +231,21 @@ class ManageGroupsActivity : CatimaAppCompatActivity(), GroupAdapterListener {
     override fun onDeleteButtonClicked(view: View) {
         val groupName = getGroupName(view)
 
-        MaterialAlertDialogBuilder(this).apply {
-            setTitle(R.string.deleteConfirmationGroup)
-            setMessage(groupName)
+        MaterialAlertDialogBuilder(this)
+            .apply {
+                setTitle(R.string.deleteConfirmationGroup)
+                setMessage(groupName)
 
-            setPositiveButton(getString(R.string.ok)) { dialog: DialogInterface, which: Int ->
-                DBHelper.deleteGroup(mDatabase, groupName)
-                updateGroupList()
-                // Delete may change ordering, so invalidate
-                invalidateHomescreenActiveTab()
-            }
-            setNegativeButton(getString(R.string.cancel)) { dialog: DialogInterface, which: Int ->
-                dialog.cancel()
-            }
-        }.create().show()
+                setPositiveButton(getString(R.string.ok)) { dialog: DialogInterface, which: Int ->
+                    DBHelper.deleteGroup(mDatabase, groupName)
+                    updateGroupList()
+                    // Delete may change ordering, so invalidate
+                    invalidateHomescreenActiveTab()
+                }
+                setNegativeButton(getString(R.string.cancel)) { dialog: DialogInterface, which: Int ->
+                    dialog.cancel()
+                }
+            }.create()
+            .show()
     }
 }

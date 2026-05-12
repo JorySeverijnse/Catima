@@ -39,7 +39,7 @@ android {
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
         debug {
@@ -163,19 +163,20 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso.espresso.core)
 }
 
-tasks.register("copyRawResFiles", Copy::class) {
-    from(
-        layout.projectDirectory.file("../CHANGELOG.md"),
-        layout.projectDirectory.file("../PRIVACY.md")
-    )
-    into(layout.projectDirectory.dir("src/main/res/raw"))
-    rename { it.lowercase() }
-}.also {
-    tasks.preBuild.dependsOn(it)
-    tasks.getByName<Delete>("clean") {
-        val filesNamesToDelete = listOf("CHANGELOG", "PRIVACY")
-        filesNamesToDelete.forEach { fileName ->
-            delete(layout.projectDirectory.file("src/main/res/raw/${fileName.lowercase()}.md"))
+tasks
+    .register("copyRawResFiles", Copy::class) {
+        from(
+            layout.projectDirectory.file("../CHANGELOG.md"),
+            layout.projectDirectory.file("../PRIVACY.md"),
+        )
+        into(layout.projectDirectory.dir("src/main/res/raw"))
+        rename { it.lowercase() }
+    }.also {
+        tasks.preBuild.dependsOn(it)
+        tasks.getByName<Delete>("clean") {
+            val filesNamesToDelete = listOf("CHANGELOG", "PRIVACY")
+            filesNamesToDelete.forEach { fileName ->
+                delete(layout.projectDirectory.file("src/main/res/raw/${fileName.lowercase()}.md"))
+            }
         }
     }
-}

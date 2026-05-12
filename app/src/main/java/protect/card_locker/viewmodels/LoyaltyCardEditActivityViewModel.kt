@@ -10,7 +10,7 @@ class LoyaltyCardEditActivityViewModel : ViewModel() {
     var initialized: Boolean = false
     var hasChanged: Boolean = false
 
-    var taskHandler: TaskHandler = TaskHandler();
+    var taskHandler: TaskHandler = TaskHandler()
 
     var addGroup: String? = null
     var openSetIconMenu: Boolean = false

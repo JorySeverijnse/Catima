@@ -37,27 +37,28 @@ fun CatimaAboutSection(
     val openDialog = remember { mutableStateOf(false) }
 
     Row(
-        modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .clickable {
-                if (onClickDialogText != null) {
-                    openDialog.value = true
-                } else if (onClickUrl != null) {
-                    OpenWebLinkHandler().openBrowser(activity, onClickUrl)
-                }
-            }
-            .semantics(mergeDescendants = true) {}
+        modifier =
+            modifier
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+                .clickable {
+                    if (onClickDialogText != null) {
+                        openDialog.value = true
+                    } else if (onClickUrl != null) {
+                        OpenWebLinkHandler().openBrowser(activity, onClickUrl)
+                    }
+                }.semantics(mergeDescendants = true) {},
     ) {
         Column(modifier = Modifier.weight(1F)) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
             )
             Text(text = message)
         }
-        Text(modifier = Modifier.align(Alignment.CenterVertically).semantics() { hideFromAccessibility() },
+        Text(
+            modifier = Modifier.align(Alignment.CenterVertically).semantics { hideFromAccessibility() },
             text = ">",
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
     if (openDialog.value && onClickDialogText != null) {
@@ -69,7 +70,7 @@ fun CatimaAboutSection(
             text = {
                 Text(
                     text = onClickDialogText,
-                    modifier = Modifier.verticalScroll(rememberScrollState())
+                    modifier = Modifier.verticalScroll(rememberScrollState()),
                 )
             },
             onDismissRequest = {
@@ -79,7 +80,7 @@ fun CatimaAboutSection(
                 TextButton(
                     onClick = {
                         openDialog.value = false
-                    }
+                    },
                 ) {
                     Text(stringResource(R.string.ok))
                 }
@@ -89,12 +90,12 @@ fun CatimaAboutSection(
                     TextButton(
                         onClick = {
                             OpenWebLinkHandler().openBrowser(activity, onClickUrl)
-                        }
+                        },
                     ) {
                         Text(stringResource(R.string.view_online))
                     }
                 }
-            }
+            },
         )
     }
 }

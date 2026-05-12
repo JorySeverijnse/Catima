@@ -9,7 +9,10 @@ import net.lingala.zip4j.model.LocalFileHeader
 import java.io.FileNotFoundException
 import java.io.IOException
 
-class PkpassesParser(context: Context, uri: Uri?) {
+class PkpassesParser(
+    context: Context,
+    uri: Uri?,
+) {
     private var mContext = context
     private val pkPassParsers: ArrayList<PkpassParser> = ArrayList()
 
@@ -48,7 +51,7 @@ class PkpassesParser(context: Context, uri: Uri?) {
 
                         // Parse temporary file
                         pkPassParsers.add(
-                            PkpassParser(mContext, tempFile.toUri())
+                            PkpassParser(mContext, tempFile.toUri()),
                         )
 
                         // Delete temporary file
@@ -63,9 +66,7 @@ class PkpassesParser(context: Context, uri: Uri?) {
         }
     }
 
-    fun getPkpassParsers(): ArrayList<PkpassParser> {
-        return pkPassParsers
-    }
+    fun getPkpassParsers(): ArrayList<PkpassParser> = pkPassParsers
 
     companion object {
         private const val TAG = "Catima"

@@ -22,30 +22,33 @@ fun CatimaTheme(content: @Composable () -> Unit) {
 
     val isDynamicColorSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
-    val lightTheme = if (isDynamicColorSupported) {
-        dynamicLightColorScheme(context)
-    } else {
-        lightColorScheme(primary = colorResource(id = R.color.md_theme_light_primary))
-    }
+    val lightTheme =
+        if (isDynamicColorSupported) {
+            dynamicLightColorScheme(context)
+        } else {
+            lightColorScheme(primary = colorResource(id = R.color.md_theme_light_primary))
+        }
 
-    var darkTheme = if (isDynamicColorSupported) {
-        dynamicDarkColorScheme(context)
-    } else {
-        darkColorScheme(primary = colorResource(id = R.color.md_theme_dark_primary))
-    }
+    var darkTheme =
+        if (isDynamicColorSupported) {
+            dynamicDarkColorScheme(context)
+        } else {
+            darkColorScheme(primary = colorResource(id = R.color.md_theme_dark_primary))
+        }
 
     if (settings.oledDark) {
         darkTheme = darkTheme.copy(background = Color.Black)
     }
 
-    val colorScheme = when (settings.theme) {
-        AppCompatDelegate.MODE_NIGHT_NO -> lightTheme
-        AppCompatDelegate.MODE_NIGHT_YES -> darkTheme
-        else -> if (isSystemInDarkTheme()) darkTheme else lightTheme
-    }
+    val colorScheme =
+        when (settings.theme) {
+            AppCompatDelegate.MODE_NIGHT_NO -> lightTheme
+            AppCompatDelegate.MODE_NIGHT_YES -> darkTheme
+            else -> if (isSystemInDarkTheme()) darkTheme else lightTheme
+        }
 
     MaterialTheme(
         colorScheme = colorScheme,
-        content = content
+        content = content,
     )
 }

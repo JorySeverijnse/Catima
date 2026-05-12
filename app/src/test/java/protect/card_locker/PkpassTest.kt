@@ -47,7 +47,8 @@ class PkpassTest {
 
         Assert.assertEquals(-1, parsedCard.id)
         Assert.assertEquals("EUROWINGS", parsedCard.store)
-        Assert.assertEquals("Eurowings Boarding Pass\n" +
+        Assert.assertEquals(
+            "Eurowings Boarding Pass\n" +
                 "\n" +
                 "Gate: B61\n" +
                 "Sitz: 12D\n" +
@@ -94,12 +95,17 @@ class PkpassTest {
                 "\n" +
                 "0180 6 320 320 ( 0:00 Uhr - 24:00 Uhr )\n" +
                 "\n" +
-                "(0,20 € pro Anruf aus dem Festnetz der Deutschen Telekom - Mobilfunk maximal 0,60 € pro Anruf).", parsedCard.note)
+                "(0,20 € pro Anruf aus dem Festnetz der Deutschen Telekom - Mobilfunk maximal 0,60 € pro Anruf).",
+            parsedCard.note,
+        )
         Assert.assertEquals(Date(1567911600000), parsedCard.validFrom)
         Assert.assertEquals(null, parsedCard.expiry)
         Assert.assertEquals(BigDecimal(0), parsedCard.balance)
         Assert.assertEquals(null, parsedCard.balanceType)
-        Assert.assertEquals("M1DOE/JOHN         JBZPPP CGNDBVEW 0954 251A012D0073 148>5181W 9250BEW 00000000000002A0000000000000 0                          N", parsedCard.cardId)
+        Assert.assertEquals(
+            "M1DOE/JOHN         JBZPPP CGNDBVEW 0954 251A012D0073 148>5181W 9250BEW 00000000000002A0000000000000 0                          N",
+            parsedCard.cardId,
+        )
         Assert.assertEquals(null, parsedCard.barcodeId)
         Assert.assertEquals(BarcodeFormat.AZTEC, parsedCard.barcodeType!!.format())
         Assert.assertEquals(StandardCharsets.ISO_8859_1, parsedCard.barcodeEncoding)
@@ -118,7 +124,8 @@ class PkpassTest {
 
         Assert.assertEquals(-1, parsedCard.id)
         Assert.assertEquals("EUROWINGS", parsedCard.store)
-        Assert.assertEquals("Eurowings Boarding Pass\n" +
+        Assert.assertEquals(
+            "Eurowings Boarding Pass\n" +
                 "\n" +
                 "Gate: B61\n" +
                 "Seat: 12D\n" +
@@ -161,12 +168,17 @@ class PkpassTest {
                 "As a matter of course, liquids from the Travel Value / Duty Free shops which have been purchased after you have passed through security are still allowed on board.\n" +
                 "\n" +
                 "Eurowings shall not be liable for any items which passengers are prohibited from carrying in their hand baggage for security reasons and are required to surrender at the security checkpoint.\n" +
-                "Contact: https://mobile.eurowings.com/booking/StaticContactInfo.aspx?culture=en-GB&back=home", parsedCard.note)
+                "Contact: https://mobile.eurowings.com/booking/StaticContactInfo.aspx?culture=en-GB&back=home",
+            parsedCard.note,
+        )
         Assert.assertEquals(Date(1567911600000), parsedCard.validFrom)
         Assert.assertEquals(null, parsedCard.expiry)
         Assert.assertEquals(BigDecimal(0), parsedCard.balance)
         Assert.assertEquals(null, parsedCard.balanceType)
-        Assert.assertEquals("M1DOE/JOHN         JBZPPP CGNDBVEW 0954 251A012D0073 148>5181W 9250BEW 00000000000002A0000000000000 0                          N", parsedCard.cardId)
+        Assert.assertEquals(
+            "M1DOE/JOHN         JBZPPP CGNDBVEW 0954 251A012D0073 148>5181W 9250BEW 00000000000002A0000000000000 0                          N",
+            parsedCard.cardId,
+        )
         Assert.assertEquals(null, parsedCard.barcodeId)
         Assert.assertEquals(BarcodeFormat.AZTEC, parsedCard.barcodeType!!.format())
         Assert.assertEquals(StandardCharsets.ISO_8859_1, parsedCard.barcodeEncoding)
@@ -212,7 +224,8 @@ class PkpassTest {
 
             Assert.assertEquals(-1, parsedCard.id)
             Assert.assertEquals("EUROWINGS", parsedCard.store)
-            Assert.assertEquals("Eurowings Boarding Pass\n" +
+            Assert.assertEquals(
+                "Eurowings Boarding Pass\n" +
                     "\n" +
                     "Gate: B61\n" +
                     "Sitz: 12D\n" +
@@ -259,12 +272,17 @@ class PkpassTest {
                     "\n" +
                     "0180 6 320 320 ( 0:00 Uhr - 24:00 Uhr )\n" +
                     "\n" +
-                    "(0,20 € pro Anruf aus dem Festnetz der Deutschen Telekom - Mobilfunk maximal 0,60 € pro Anruf).", parsedCard.note)
+                    "(0,20 € pro Anruf aus dem Festnetz der Deutschen Telekom - Mobilfunk maximal 0,60 € pro Anruf).",
+                parsedCard.note,
+            )
             Assert.assertEquals(Date(1567911600000), parsedCard.validFrom)
             Assert.assertEquals(null, parsedCard.expiry)
             Assert.assertEquals(BigDecimal(0), parsedCard.balance)
             Assert.assertEquals(null, parsedCard.balanceType)
-            Assert.assertEquals("M1DOE/JOHN         JBZPPP CGNDBVEW 0954 251A012D0073 148>5181W 9250BEW 00000000000002A0000000000000 0                          N", parsedCard.cardId)
+            Assert.assertEquals(
+                "M1DOE/JOHN         JBZPPP CGNDBVEW 0954 251A012D0073 148>5181W 9250BEW 00000000000002A0000000000000 0                          N",
+                parsedCard.cardId,
+            )
             Assert.assertEquals(null, parsedCard.barcodeId)
             Assert.assertEquals(BarcodeFormat.AZTEC, parsedCard.barcodeType!!.format())
             Assert.assertEquals(StandardCharsets.ISO_8859_1, parsedCard.barcodeEncoding)
@@ -283,7 +301,8 @@ class PkpassTest {
 
             Assert.assertEquals(-1, parsedCard.id)
             Assert.assertEquals("EUROWINGS", parsedCard.store)
-            Assert.assertEquals("Eurowings Boarding Pass\n" +
+            Assert.assertEquals(
+                "Eurowings Boarding Pass\n" +
                     "\n" +
                     "Gate: B61\n" +
                     "Seat: 12D\n" +
@@ -326,12 +345,17 @@ class PkpassTest {
                     "As a matter of course, liquids from the Travel Value / Duty Free shops which have been purchased after you have passed through security are still allowed on board.\n" +
                     "\n" +
                     "Eurowings shall not be liable for any items which passengers are prohibited from carrying in their hand baggage for security reasons and are required to surrender at the security checkpoint.\n" +
-                    "Contact: https://mobile.eurowings.com/booking/StaticContactInfo.aspx?culture=en-GB&back=home", parsedCard.note)
+                    "Contact: https://mobile.eurowings.com/booking/StaticContactInfo.aspx?culture=en-GB&back=home",
+                parsedCard.note,
+            )
             Assert.assertEquals(Date(1567911600000), parsedCard.validFrom)
             Assert.assertEquals(null, parsedCard.expiry)
             Assert.assertEquals(BigDecimal(0), parsedCard.balance)
             Assert.assertEquals(null, parsedCard.balanceType)
-            Assert.assertEquals("M1DOE/JOHN         JBZPPP CGNDBVEW 0954 251A012D0073 148>5181W 9250BEW 00000000000002A0000000000000 0                          N", parsedCard.cardId)
+            Assert.assertEquals(
+                "M1DOE/JOHN         JBZPPP CGNDBVEW 0954 251A012D0073 148>5181W 9250BEW 00000000000002A0000000000000 0                          N",
+                parsedCard.cardId,
+            )
             Assert.assertEquals(null, parsedCard.barcodeId)
             Assert.assertEquals(BarcodeFormat.AZTEC, parsedCard.barcodeType!!.format())
             Assert.assertEquals(StandardCharsets.ISO_8859_1, parsedCard.barcodeEncoding)
@@ -375,7 +399,10 @@ class PkpassTest {
         Assert.assertEquals(null, parsedCard.expiry)
         Assert.assertEquals(BigDecimal(0), parsedCard.balance)
         Assert.assertEquals(null, parsedCard.balanceType)
-        Assert.assertEquals("M1DOE/JOHN         JBZPPP CGNDBVEW 0954 251A012D0073 148>5181W 9250BEW 00000000000002A0000000000000 0                          N", parsedCard.cardId)
+        Assert.assertEquals(
+            "M1DOE/JOHN         JBZPPP CGNDBVEW 0954 251A012D0073 148>5181W 9250BEW 00000000000002A0000000000000 0                          N",
+            parsedCard.cardId,
+        )
         Assert.assertEquals(null, parsedCard.barcodeId)
         Assert.assertEquals(BarcodeFormat.AZTEC, parsedCard.barcodeType!!.format())
         Assert.assertEquals(StandardCharsets.ISO_8859_1, parsedCard.barcodeEncoding)
@@ -398,7 +425,10 @@ class PkpassTest {
         Assert.assertEquals(null, parsedCard.expiry)
         Assert.assertEquals(BigDecimal(0), parsedCard.balance)
         Assert.assertEquals(null, parsedCard.balanceType)
-        Assert.assertEquals("M1DOE/JOHN         JBZPPP CGNDBVEW 0954 251A012D0073 148>5181W 9250BEW 00000000000002A0000000000000 0                          N", parsedCard.cardId)
+        Assert.assertEquals(
+            "M1DOE/JOHN         JBZPPP CGNDBVEW 0954 251A012D0073 148>5181W 9250BEW 00000000000002A0000000000000 0                          N",
+            parsedCard.cardId,
+        )
         Assert.assertEquals(null, parsedCard.barcodeId)
         Assert.assertEquals(BarcodeFormat.AZTEC, parsedCard.barcodeType!!.format())
         Assert.assertEquals(StandardCharsets.ISO_8859_1, parsedCard.barcodeEncoding)
@@ -437,7 +467,8 @@ class PkpassTest {
 
         Assert.assertEquals(-1, parsedCard.id)
         Assert.assertEquals("EUROWINGS", parsedCard.store)
-        Assert.assertEquals("Eurowings Boarding Pass\n" +
+        Assert.assertEquals(
+            "Eurowings Boarding Pass\n" +
                 "\n" +
                 "Gate: B61\n" +
                 "Sitz: 12D\n" +
@@ -484,7 +515,9 @@ class PkpassTest {
                 "\n" +
                 "0180 6 320 320 ( 0:00 Uhr - 24:00 Uhr )\n" +
                 "\n" +
-                "(0,20 € pro Anruf aus dem Festnetz der Deutschen Telekom - Mobilfunk maximal 0,60 € pro Anruf).", parsedCard.note)
+                "(0,20 € pro Anruf aus dem Festnetz der Deutschen Telekom - Mobilfunk maximal 0,60 € pro Anruf).",
+            parsedCard.note,
+        )
         Assert.assertEquals(Date(1567911600000), parsedCard.validFrom)
         Assert.assertEquals(null, parsedCard.expiry)
         Assert.assertEquals(BigDecimal(0), parsedCard.balance)
@@ -508,7 +541,8 @@ class PkpassTest {
 
         Assert.assertEquals(-1, parsedCard.id)
         Assert.assertEquals("EUROWINGS", parsedCard.store)
-        Assert.assertEquals("Eurowings Boarding Pass\n" +
+        Assert.assertEquals(
+            "Eurowings Boarding Pass\n" +
                 "\n" +
                 "Gate: B61\n" +
                 "Seat: 12D\n" +
@@ -551,7 +585,9 @@ class PkpassTest {
                 "As a matter of course, liquids from the Travel Value / Duty Free shops which have been purchased after you have passed through security are still allowed on board.\n" +
                 "\n" +
                 "Eurowings shall not be liable for any items which passengers are prohibited from carrying in their hand baggage for security reasons and are required to surrender at the security checkpoint.\n" +
-                "Contact: https://mobile.eurowings.com/booking/StaticContactInfo.aspx?culture=en-GB&back=home", parsedCard.note)
+                "Contact: https://mobile.eurowings.com/booking/StaticContactInfo.aspx?culture=en-GB&back=home",
+            parsedCard.note,
+        )
         Assert.assertEquals(Date(1567911600000), parsedCard.validFrom)
         Assert.assertEquals(null, parsedCard.expiry)
         Assert.assertEquals(BigDecimal(0), parsedCard.balance)
@@ -594,7 +630,8 @@ class PkpassTest {
 
         Assert.assertEquals(-1, parsedCard.id)
         Assert.assertEquals("droidcon Berlin 2024", parsedCard.store)
-        Assert.assertEquals("Ticket for droidcon Berlin 2024 (Speaker)\n" +
+        Assert.assertEquals(
+            "Ticket for droidcon Berlin 2024 (Speaker)\n" +
                 "\n" +
                 "Admission time: 2024-07-03 08:00\n" +
                 "\n" +
@@ -613,7 +650,9 @@ class PkpassTest {
                 "Organizer contact: global@droidcon.de\n" +
                 "Order code: REDACTED\n" +
                 "Purchase date: 2024-06-06 07:26\n" +
-                "Website: https://pretix.eu/droidcon/dcbln24/", parsedCard.note)
+                "Website: https://pretix.eu/droidcon/dcbln24/",
+            parsedCard.note,
+        )
         Assert.assertEquals(null, parsedCard.validFrom)
         Assert.assertEquals(null, parsedCard.expiry)
         Assert.assertEquals(BigDecimal(0), parsedCard.balance)

@@ -28,12 +28,12 @@ interface Importer {
         FormatException::class,
         InterruptedException::class,
         JSONException::class,
-        ParseException::class
+        ParseException::class,
     )
     fun importData(
         context: Context,
         database: SQLiteDatabase,
         inputFile: File,
-        password: CharArray
+        password: CharArray,
     )
 }

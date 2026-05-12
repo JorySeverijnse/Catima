@@ -5,12 +5,16 @@ import android.os.Bundle
 
 class ParseResult(
     val parseResultType: ParseResultType,
-    val loyaltyCard: LoyaltyCard) {
+    val loyaltyCard: LoyaltyCard,
+) {
     var note: String? = null
 
     fun toLoyaltyCardBundle(context: Context): Bundle {
         when (parseResultType) {
-            ParseResultType.FULL -> return loyaltyCard.toBundle(context, listOf())
+            ParseResultType.FULL -> {
+                return loyaltyCard.toBundle(context, listOf())
+            }
+
             ParseResultType.BARCODE_ONLY -> {
                 val defaultLoyaltyCard = LoyaltyCard()
                 defaultLoyaltyCard.setBarcodeId(null)
@@ -22,8 +26,8 @@ class ParseResult(
                     listOf(
                         LoyaltyCard.BUNDLE_LOYALTY_CARD_BARCODE_ID,
                         LoyaltyCard.BUNDLE_LOYALTY_CARD_BARCODE_TYPE,
-                        LoyaltyCard.BUNDLE_LOYALTY_CARD_CARD_ID
-                    )
+                        LoyaltyCard.BUNDLE_LOYALTY_CARD_CARD_ID,
+                    ),
                 )
             }
         }

@@ -1,0 +1,17 @@
+[*]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{kt,kts}]
+max_line_length = off
+
+# Android project uses underscores in package names (e.g., card_locker)
+ktlint_standard_package-name = disabled
+
+# Jetpack Compose composable functions use lowercase names
+ktlint_standard_function-naming = disabled
+
+# Allow long lines in test data/method chains
+ktlint_standard_max-line-length = disabled

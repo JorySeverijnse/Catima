@@ -95,8 +95,9 @@ class ImportExportActivity : CatimaAppCompatActivity() {
                         onExportComplete(
                             ImportExportResult(
                                 ImportExportResultType.GenericFailure,
-                                result.toString()
-                            ), uri
+                                result.toString(),
+                            ),
+                            uri,
                         )
                     }
                 }.start()
@@ -112,11 +113,12 @@ class ImportExportActivity : CatimaAppCompatActivity() {
             }
 
         // Check that there is a file manager available
-        val intentCreateDocumentAction = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/zip"
-            putExtra(Intent.EXTRA_TITLE, getExportFilename())
-        }
+        val intentCreateDocumentAction =
+            Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "application/zip"
+                putExtra(Intent.EXTRA_TITLE, getExportFilename())
+            }
 
         val exportButton: Button = binding.exportButton
         exportButton.setOnClickListener {
@@ -125,20 +127,24 @@ class ImportExportActivity : CatimaAppCompatActivity() {
 
             val container = FrameLayout(this@ImportExportActivity)
 
-            val textInputLayout = TextInputLayout(this@ImportExportActivity).apply {
-                endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
-                layoutParams = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                ).apply {
-                    setMargins(50, 10, 50, 0)
+            val textInputLayout =
+                TextInputLayout(this@ImportExportActivity).apply {
+                    endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+                    layoutParams =
+                        LinearLayout
+                            .LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ).apply {
+                                setMargins(50, 10, 50, 0)
+                            }
                 }
-            }
 
-            val input = EditText(this@ImportExportActivity).apply {
-                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                setHint(R.string.exportPasswordHint)
-            }
+            val input =
+                EditText(this@ImportExportActivity).apply {
+                    inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                    setHint(R.string.exportPasswordHint)
+                }
 
             textInputLayout.addView(input)
             container.addView(textInputLayout)
@@ -148,11 +154,12 @@ class ImportExportActivity : CatimaAppCompatActivity() {
                 try {
                     fileCreateLauncher.launch(intentCreateDocumentAction)
                 } catch (e: ActivityNotFoundException) {
-                    Toast.makeText(
-                        applicationContext,
-                        R.string.failedOpeningFileManager,
-                        Toast.LENGTH_LONG
-                    ).show()
+                    Toast
+                        .makeText(
+                            applicationContext,
+                            R.string.failedOpeningFileManager,
+                            Toast.LENGTH_LONG,
+                        ).show()
                     Log.e(TAG, "No activity found to handle intent", e)
                 }
             }
@@ -169,7 +176,10 @@ class ImportExportActivity : CatimaAppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    private fun openFileForImport(uri: Uri, password: CharArray?) {
+    private fun openFileForImport(
+        uri: Uri,
+        password: CharArray?,
+    ) {
         // Running this in a thread prevents Android from throwing a NetworkOnMainThreadException for large files
         // FIXME: This is still suboptimal, because showing that the import started is delayed until the network request finishes
         Thread {
@@ -182,8 +192,10 @@ class ImportExportActivity : CatimaAppCompatActivity() {
                 onImportComplete(
                     ImportExportResult(
                         ImportExportResultType.GenericFailure,
-                        e.toString()
-                    ), uri, importDataFormat
+                        e.toString(),
+                    ),
+                    uri,
+                    importDataFormat,
                 )
             }
         }.start()
@@ -203,7 +215,8 @@ class ImportExportActivity : CatimaAppCompatActivity() {
         }
 
         val builder = MaterialAlertDialogBuilder(this)
-        builder.setTitle(R.string.chooseImportType)
+        builder
+            .setTitle(R.string.chooseImportType)
             .setItems(importOptions.toTypedArray()) { _, which ->
                 when (which) {
                     // Catima
@@ -212,18 +225,21 @@ class ImportExportActivity : CatimaAppCompatActivity() {
                         importAlertMessage = getString(R.string.importCatimaMessage)
                         importDataFormat = DataFormat.Catima
                     }
+
                     // Fidme
                     1 -> {
                         importAlertTitle = getString(R.string.importFidme)
                         importAlertMessage = getString(R.string.importFidmeMessage)
                         importDataFormat = DataFormat.Fidme
                     }
+
                     // Loyalty Card Keychain
                     2 -> {
                         importAlertTitle = getString(R.string.importLoyaltyCardKeychain)
                         importAlertMessage = getString(R.string.importLoyaltyCardKeychainMessage)
                         importDataFormat = DataFormat.Catima
                     }
+
                     // Voucher Vault
                     3 -> {
                         importAlertTitle = getString(R.string.importVoucherVault)
@@ -231,7 +247,9 @@ class ImportExportActivity : CatimaAppCompatActivity() {
                         importDataFormat = DataFormat.VoucherVault
                     }
 
-                    else -> throw IllegalArgumentException("Unknown DataFormat")
+                    else -> {
+                        throw IllegalArgumentException("Unknown DataFormat")
+                    }
                 }
 
                 if (fileData != null) {
@@ -246,15 +264,15 @@ class ImportExportActivity : CatimaAppCompatActivity() {
                         try {
                             fileOpenLauncher.launch("*/*")
                         } catch (e: ActivityNotFoundException) {
-                            Toast.makeText(
-                                applicationContext,
-                                R.string.failedOpeningFileManager,
-                                Toast.LENGTH_LONG
-                            ).show()
+                            Toast
+                                .makeText(
+                                    applicationContext,
+                                    R.string.failedOpeningFileManager,
+                                    Toast.LENGTH_LONG,
+                                ).show()
                             Log.e(TAG, "No activity found to handle intent", e)
                         }
-                    }
-                    .setNegativeButton(R.string.cancel, null)
+                    }.setNegativeButton(R.string.cancel, null)
                     .show()
             }
         builder.show()
@@ -265,24 +283,29 @@ class ImportExportActivity : CatimaAppCompatActivity() {
         targetUri: Uri,
         dataFormat: DataFormat?,
         password: CharArray?,
-        closeWhenDone: Boolean
+        closeWhenDone: Boolean,
     ) {
         mTasks.flushTaskList(TaskHandler.TYPE.IMPORT, true, false, false)
-        val listener = ImportExportTask.TaskCompleteListener { result, dataFormat ->
-            onImportComplete(result, targetUri, dataFormat)
-            if (closeWhenDone) {
-                try {
-                    target?.close()
-                } catch (ioException: IOException) {
-                    ioException.printStackTrace()
+        val listener =
+            ImportExportTask.TaskCompleteListener { result, dataFormat ->
+                onImportComplete(result, targetUri, dataFormat)
+                if (closeWhenDone) {
+                    try {
+                        target?.close()
+                    } catch (ioException: IOException) {
+                        ioException.printStackTrace()
+                    }
                 }
             }
-        }
 
-        importExporter = ImportExportTask(
-            this@ImportExportActivity,
-            dataFormat, target, password, listener
-        )
+        importExporter =
+            ImportExportTask(
+                this@ImportExportActivity,
+                dataFormat,
+                target,
+                password,
+                listener,
+            )
         mTasks.executeTask(TaskHandler.TYPE.IMPORT, importExporter)
     }
 
@@ -290,24 +313,29 @@ class ImportExportActivity : CatimaAppCompatActivity() {
         target: OutputStream?,
         targetUri: Uri,
         password: CharArray?,
-        closeWhenDone: Boolean
+        closeWhenDone: Boolean,
     ) {
         mTasks.flushTaskList(TaskHandler.TYPE.EXPORT, true, false, false)
-        val listener = ImportExportTask.TaskCompleteListener { result, dataFormat ->
-            onExportComplete(result, targetUri)
-            if (closeWhenDone) {
-                try {
-                    target?.close()
-                } catch (ioException: IOException) {
-                    ioException.printStackTrace()
+        val listener =
+            ImportExportTask.TaskCompleteListener { result, dataFormat ->
+                onExportComplete(result, targetUri)
+                if (closeWhenDone) {
+                    try {
+                        target?.close()
+                    } catch (ioException: IOException) {
+                        ioException.printStackTrace()
+                    }
                 }
             }
-        }
 
-        importExporter = ImportExportTask(
-            this@ImportExportActivity,
-            DataFormat.Catima, target, password, listener
-        )
+        importExporter =
+            ImportExportTask(
+                this@ImportExportActivity,
+                DataFormat.Catima,
+                target,
+                password,
+                listener,
+            )
         mTasks.executeTask(TaskHandler.TYPE.EXPORT, importExporter)
     }
 
@@ -328,26 +356,33 @@ class ImportExportActivity : CatimaAppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun retryWithPassword(dataFormat: DataFormat, uri: Uri) {
+    private fun retryWithPassword(
+        dataFormat: DataFormat,
+        uri: Uri,
+    ) {
         val builder = MaterialAlertDialogBuilder(this)
         builder.setTitle(R.string.passwordRequired)
 
         val container = FrameLayout(this@ImportExportActivity)
 
-        val textInputLayout = TextInputLayout(this@ImportExportActivity).apply {
-            endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
-            layoutParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(50, 10, 50, 0)
+        val textInputLayout =
+            TextInputLayout(this@ImportExportActivity).apply {
+                endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+                layoutParams =
+                    LinearLayout
+                        .LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ).apply {
+                            setMargins(50, 10, 50, 0)
+                        }
             }
-        }
 
-        val input = EditText(this@ImportExportActivity).apply {
-            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            setHint(R.string.exportPasswordHint)
-        }
+        val input =
+            EditText(this@ImportExportActivity).apply {
+                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                setHint(R.string.exportPasswordHint)
+            }
 
         textInputLayout.addView(input)
         container.addView(textInputLayout)
@@ -361,12 +396,16 @@ class ImportExportActivity : CatimaAppCompatActivity() {
         builder.show()
     }
 
-    private fun buildResultDialogMessage(result: ImportExportResult, isImport: Boolean): String {
-        val messageId = if (result.resultType() == ImportExportResultType.Success) {
-            if (isImport) R.string.importSuccessful else R.string.exportSuccessful
-        } else {
-            if (isImport) R.string.importFailed else R.string.exportFailed
-        }
+    private fun buildResultDialogMessage(
+        result: ImportExportResult,
+        isImport: Boolean,
+    ): String {
+        val messageId =
+            if (result.resultType() == ImportExportResultType.Success) {
+                if (isImport) R.string.importSuccessful else R.string.exportSuccessful
+            } else {
+                if (isImport) R.string.importFailed else R.string.exportFailed
+            }
 
         val messageBuilder = StringBuilder(resources.getString(messageId))
         if (result.developerDetails() != null) {
@@ -379,7 +418,11 @@ class ImportExportActivity : CatimaAppCompatActivity() {
         return messageBuilder.toString()
     }
 
-    private fun onImportComplete(result: ImportExportResult, path: Uri, dataFormat: DataFormat?) {
+    private fun onImportComplete(
+        result: ImportExportResult,
+        path: Uri,
+        dataFormat: DataFormat?,
+    ) {
         val resultType = result.resultType()
 
         if (resultType == ImportExportResultType.BadPassword) {
@@ -395,7 +438,10 @@ class ImportExportActivity : CatimaAppCompatActivity() {
         builder.create().show()
     }
 
-    private fun onExportComplete(result: ImportExportResult, path: Uri) {
+    private fun onExportComplete(
+        result: ImportExportResult,
+        path: Uri,
+    ) {
         val resultType = result.resultType()
 
         val builder = MaterialAlertDialogBuilder(this)
@@ -407,12 +453,13 @@ class ImportExportActivity : CatimaAppCompatActivity() {
             val sendLabel = this@ImportExportActivity.resources.getText(R.string.sendLabel)
 
             builder.setPositiveButton(sendLabel) { dialog, _ ->
-                val sendIntent = Intent(Intent.ACTION_SEND).apply {
-                    putExtra(Intent.EXTRA_STREAM, path)
-                    type = "text/csv"
-                    // set flag to give temporary permission to external app to use the FileProvider
-                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                }
+                val sendIntent =
+                    Intent(Intent.ACTION_SEND).apply {
+                        putExtra(Intent.EXTRA_STREAM, path)
+                        type = "text/csv"
+                        // set flag to give temporary permission to external app to use the FileProvider
+                        flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    }
 
                 this@ImportExportActivity.startActivity(Intent.createChooser(sendIntent, sendLabel))
                 dialog.dismiss()

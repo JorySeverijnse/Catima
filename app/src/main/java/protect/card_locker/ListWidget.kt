@@ -22,30 +22,31 @@ class ListWidget : AppWidgetProvider() {
         onUpdate(
             context,
             appWidgetManager,
-            appWidgetManager.getAppWidgetIds(componentName)
+            appWidgetManager.getAppWidgetIds(componentName),
         )
     }
 
     override fun onUpdate(
         context: Context,
         appWidgetManager: AppWidgetManager,
-        appWidgetIds: IntArray
+        appWidgetIds: IntArray,
     ) {
         for (appWidgetId in appWidgetIds) {
             val database = DBHelper(context).readableDatabase
 
             // Get cards
-            val order = Utils.getLoyaltyCardOrder(context);
-            val orderDirection = Utils.getLoyaltyCardOrderDirection(context);
+            val order = Utils.getLoyaltyCardOrder(context)
+            val orderDirection = Utils.getLoyaltyCardOrderDirection(context)
 
-            val loyaltyCardCursor = DBHelper.getLoyaltyCardCursor(
-                database,
-                "",
-                null,
-                order,
-                orderDirection,
-                LoyaltyCardArchiveFilter.Unarchived
-            )
+            val loyaltyCardCursor =
+                DBHelper.getLoyaltyCardCursor(
+                    database,
+                    "",
+                    null,
+                    order,
+                    orderDirection,
+                    LoyaltyCardArchiveFilter.Unarchived,
+                )
 
             // Bind every card to cell in the grid
             var hasCards = false
@@ -56,8 +57,9 @@ class ListWidget : AppWidgetProvider() {
                     remoteCollectionItemsBuilder.addItem(
                         loyaltyCard.id.toLong(),
                         createRemoteViews(
-                            context, loyaltyCard
-                        )
+                            context,
+                            loyaltyCard,
+                        ),
                     )
                     hasCards = true
                 } while (loyaltyCardCursor.moveToNext())
@@ -70,15 +72,17 @@ class ListWidget : AppWidgetProvider() {
             if (hasCards) {
                 // If we have cards, create the list
                 views = RemoteViews(context.packageName, R.layout.list_widget)
-                val templateIntent = Intent(context, LoyaltyCardViewActivity::class.java).apply {
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                }
-                val pendingIntent = PendingIntent.getActivity(
-                    context,
-                    0,
-                    templateIntent,
-                    PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-                )
+                val templateIntent =
+                    Intent(context, LoyaltyCardViewActivity::class.java).apply {
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    }
+                val pendingIntent =
+                    PendingIntent.getActivity(
+                        context,
+                        0,
+                        templateIntent,
+                        PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+                    )
                 views.setPendingIntentTemplate(R.id.grid_view, pendingIntent)
 
                 RemoteViewsCompat.setRemoteAdapter(
@@ -86,7 +90,7 @@ class ListWidget : AppWidgetProvider() {
                     views,
                     appWidgetId,
                     R.id.grid_view,
-                    remoteCollectionItemsBuilder.build()
+                    remoteCollectionItemsBuilder.build(),
                 )
             }
 
@@ -95,38 +99,43 @@ class ListWidget : AppWidgetProvider() {
         }
     }
 
-    private fun createRemoteViews(context: Context, loyaltyCard: LoyaltyCard): RemoteViews {
+    private fun createRemoteViews(
+        context: Context,
+        loyaltyCard: LoyaltyCard,
+    ): RemoteViews {
         // Create a single cell for the grid view, bind it to open in the LoyaltyCardViewActivity
         // Note: Android 5 will not use bitmaps
-        val remoteViews = RemoteViews(context.packageName, R.layout.list_widget_item).apply {
-            val headerColor = Utils.getHeaderColor(context, loyaltyCard)
-            val foreground = if (Utils.needsDarkForeground(headerColor)) Color.BLACK else Color.WHITE
-            setInt(R.id.item_container_foreground, "setBackgroundColor", headerColor)
-            val icon = loyaltyCard.getImageThumbnail(context)
-            // FIXME: The icon flow causes a crash up to Android 12L, so force anything below 33 down this path
-            if (icon != null && Build.VERSION.SDK_INT >= 32) {
-                setInt(R.id.item_container_foreground, "setBackgroundColor", foreground)
-                setImageViewIcon(R.id.item_image, Icon.createWithBitmap(icon))
-                setViewVisibility(R.id.item_text, View.INVISIBLE)
-                setViewVisibility(R.id.item_image, View.VISIBLE)
-            } else {
-                setImageViewBitmap(R.id.item_image, null)
-                setTextViewText(R.id.item_text, loyaltyCard.store)
-                setViewVisibility(R.id.item_text, View.VISIBLE)
-                setViewVisibility(R.id.item_image, View.INVISIBLE)
-                setTextColor(
-                    R.id.item_text,
-                    foreground
-                )
-            }
+        val remoteViews =
+            RemoteViews(context.packageName, R.layout.list_widget_item).apply {
+                val headerColor = Utils.getHeaderColor(context, loyaltyCard)
+                val foreground = if (Utils.needsDarkForeground(headerColor)) Color.BLACK else Color.WHITE
+                setInt(R.id.item_container_foreground, "setBackgroundColor", headerColor)
+                val icon = loyaltyCard.getImageThumbnail(context)
+                // FIXME: The icon flow causes a crash up to Android 12L, so force anything below 33 down this path
+                if (icon != null && Build.VERSION.SDK_INT >= 32) {
+                    setInt(R.id.item_container_foreground, "setBackgroundColor", foreground)
+                    setImageViewIcon(R.id.item_image, Icon.createWithBitmap(icon))
+                    setViewVisibility(R.id.item_text, View.INVISIBLE)
+                    setViewVisibility(R.id.item_image, View.VISIBLE)
+                } else {
+                    setImageViewBitmap(R.id.item_image, null)
+                    setTextViewText(R.id.item_text, loyaltyCard.store)
+                    setViewVisibility(R.id.item_text, View.VISIBLE)
+                    setViewVisibility(R.id.item_image, View.INVISIBLE)
+                    setTextColor(
+                        R.id.item_text,
+                        foreground,
+                    )
+                }
 
-            // Add the card ID to the intent template
-            val fillInIntent = Intent().apply {
-                putExtra(LoyaltyCardViewActivity.BUNDLE_ID, loyaltyCard.id)
-            }
+                // Add the card ID to the intent template
+                val fillInIntent =
+                    Intent().apply {
+                        putExtra(LoyaltyCardViewActivity.BUNDLE_ID, loyaltyCard.id)
+                    }
 
-            setOnClickFillInIntent(R.id.item_container, fillInIntent)
-        }
+                setOnClickFillInIntent(R.id.item_container, fillInIntent)
+            }
 
         return remoteViews
     }

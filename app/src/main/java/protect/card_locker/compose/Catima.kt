@@ -22,21 +22,26 @@ import protect.card_locker.preferences.Settings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CatimaTopAppBar(title: String, onBackPressedDispatcher: OnBackPressedDispatcher?) {
+fun CatimaTopAppBar(
+    title: String,
+    onBackPressedDispatcher: OnBackPressedDispatcher?,
+) {
     // Use pure black in OLED theme
     val context = LocalContext.current
     val settings = Settings(context)
-    val isDarkMode = when (settings.theme) {
-        AppCompatDelegate.MODE_NIGHT_NO -> false
-        AppCompatDelegate.MODE_NIGHT_YES -> true
-        else -> isSystemInDarkTheme()
-    }
+    val isDarkMode =
+        when (settings.theme) {
+            AppCompatDelegate.MODE_NIGHT_NO -> false
+            AppCompatDelegate.MODE_NIGHT_YES -> true
+            else -> isSystemInDarkTheme()
+        }
 
-    val appBarColors = if (isDarkMode && settings.oledDark) {
-        TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Black)
-    } else {
-        TopAppBarDefaults.topAppBarColors()
-    }
+    val appBarColors =
+        if (isDarkMode && settings.oledDark) {
+            TopAppBarDefaults.topAppBarColors().copy(containerColor = Color.Black)
+        } else {
+            TopAppBarDefaults.topAppBarColors()
+        }
 
     TopAppBar(
         modifier = Modifier.testTag("topbar_catima"),
@@ -47,10 +52,10 @@ fun CatimaTopAppBar(title: String, onBackPressedDispatcher: OnBackPressedDispatc
                 IconButton(onClick = { onBackPressedDispatcher.onBackPressed() }) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back)
+                        contentDescription = stringResource(R.string.back),
                     )
                 }
             }
-        }
+        },
     )
 }

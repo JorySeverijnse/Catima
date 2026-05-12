@@ -23,7 +23,10 @@ import java.time.format.DateTimeParseException
 import java.util.Currency
 import java.util.Date
 
-class PkpassParser(context: Context, uri: Uri?) {
+class PkpassParser(
+    context: Context,
+    uri: Uri?,
+) {
     private var mContext = context
 
     private var translations: ArrayMap<String, Map<String, String>> = ArrayMap()
@@ -36,6 +39,7 @@ class PkpassParser(context: Context, uri: Uri?) {
     private var expiry: Date? = null
     private val balance: BigDecimal = BigDecimal(0)
     private val balanceType: Currency? = null
+
     // FIXME: Some cards may not have any barcodes, but Catima doesn't accept null card ID
     // An empty string card ID would prevent a crash, but would be blocked in the edit activity
     // Setting the default to the "No barcode" text at least prevents a crash, but it is definitely a hack
@@ -119,9 +123,7 @@ class PkpassParser(context: Context, uri: Uri?) {
         }
     }
 
-    fun listLocales(): List<String> {
-        return translations.keys.toList()
-    }
+    fun listLocales(): List<String> = translations.keys.toList()
 
     fun toLoyaltyCard(locale: String?): LoyaltyCard {
         parsePassJSON(checkNotNull(passContent) { "Pkpass instance not yet initialized!" }, locale)
@@ -149,11 +151,14 @@ class PkpassParser(context: Context, uri: Uri?) {
             null,
             null,
             null,
-            null
+            null,
         )
     }
 
-    private fun getTranslation(string: String, locale: String?): String {
+    private fun getTranslation(
+        string: String,
+        locale: String?,
+    ): String {
         if (locale == null) {
             return string
         }
@@ -163,7 +168,10 @@ class PkpassParser(context: Context, uri: Uri?) {
         return localeStrings?.get(string) ?: string
     }
 
-    private fun loadImageIfBiggerSize(fileLogoSize: Int, zipInputStream: ZipInputStream) {
+    private fun loadImageIfBiggerSize(
+        fileLogoSize: Int,
+        zipInputStream: ZipInputStream,
+    ) {
         if (logoSize < fileLogoSize) {
             image = ZipUtils.readImage(zipInputStream)
             logoSize = fileLogoSize
@@ -174,12 +182,13 @@ class PkpassParser(context: Context, uri: Uri?) {
         // First, try formats supported by Android natively
         try {
             return Color.parseColor(color)
-        } catch (ignored: IllegalArgumentException) {}
+        } catch (ignored: IllegalArgumentException) {
+        }
 
         // If that didn't work, try parsing it as a rbg(0,0,255) value
-        val red: Int;
-        val green: Int;
-        val blue: Int;
+        val red: Int
+        val green: Int
+        val blue: Int
 
         // Parse rgb(0,0,0) string
         val rgbInfo = Regex("""^rgb\(\s*(?<red>\d+)\s*,\s*(?<green>\d+)\s*,\s*(?<blue>\d+)\s*\)$""").find(color)
@@ -204,9 +213,7 @@ class PkpassParser(context: Context, uri: Uri?) {
         return Color.rgb(red, green, blue)
     }
 
-    private fun parseDateTime(dateTime: String): Date {
-        return Date.from(ZonedDateTime.parse(dateTime).toInstant())
-    }
+    private fun parseDateTime(dateTime: String): Date = Date.from(ZonedDateTime.parse(dateTime).toInstant())
 
     private fun parseLanguageStrings(data: String): Map<String, String> {
         val output = ArrayMap<String, String>()
@@ -229,7 +236,12 @@ class PkpassParser(context: Context, uri: Uri?) {
                 // 3. Clean up escape sequences
                 val keyValue = translationLine.toString().split("=", ignoreCase = false, limit = 2)
                 val key = keyValue[0].trim().removePrefix("\"").removeSuffix("\"")
-                val value = keyValue[1].trim().removePrefix("\"").removeSuffix("\";").replace("\\", "")
+                val value =
+                    keyValue[1]
+                        .trim()
+                        .removePrefix("\"")
+                        .removeSuffix("\";")
+                        .replace("\\", "")
 
                 output[key] = value
 
@@ -242,7 +254,10 @@ class PkpassParser(context: Context, uri: Uri?) {
         return output
     }
 
-    private fun parsePassJSON(jsonObject: JSONObject, locale: String?) {
+    private fun parsePassJSON(
+        jsonObject: JSONObject,
+        locale: String?,
+    ) {
         if (jsonObject.getInt("formatVersion") != 1) {
             throw IllegalArgumentException(mContext.getString(R.string.unsupportedFile))
         }
@@ -250,7 +265,8 @@ class PkpassParser(context: Context, uri: Uri?) {
         // Prefer logoText for store, it's generally shorter
         try {
             store = jsonObject.getString("logoText")
-        } catch (ignored: JSONException) {}
+        } catch (ignored: JSONException) {
+        }
 
         if (store.isNullOrEmpty()) {
             store = jsonObject.getString("organizationName")
@@ -261,15 +277,18 @@ class PkpassParser(context: Context, uri: Uri?) {
 
         try {
             validFrom = parseDateTime(jsonObject.getString("relevantDate"))
-        } catch (ignored: JSONException) {}
+        } catch (ignored: JSONException) {
+        }
 
         try {
             expiry = parseDateTime(jsonObject.getString("expirationDate"))
-        } catch (ignored: JSONException) {}
+        } catch (ignored: JSONException) {
+        }
 
         try {
             headerColor = parseColor(jsonObject.getString("backgroundColor"))
-        } catch (ignored: JSONException) {}
+        } catch (ignored: JSONException) {
+        }
 
         var pkPassHasBarcodes = false
         var validBarcodeFound = false
@@ -284,12 +303,14 @@ class PkpassParser(context: Context, uri: Uri?) {
             for (i in 0 until foundInBarcodesField.length()) {
                 barcodes.add(foundInBarcodesField.getJSONObject(i))
             }
-        } catch (ignored: JSONException) {}
+        } catch (ignored: JSONException) {
+        }
 
         // Append the deprecated entry if it exists
         try {
             barcodes.add(jsonObject.getJSONObject("barcode"))
-        } catch (ignored: JSONException) {}
+        } catch (ignored: JSONException) {
+        }
 
         for (barcode in barcodes) {
             pkPassHasBarcodes = true
@@ -299,7 +320,8 @@ class PkpassParser(context: Context, uri: Uri?) {
 
                 validBarcodeFound = true
                 break
-            } catch (ignored: IllegalArgumentException) {}
+            } catch (ignored: IllegalArgumentException) {
+            }
         }
 
         if (pkPassHasBarcodes && !validBarcodeFound) {
@@ -307,44 +329,48 @@ class PkpassParser(context: Context, uri: Uri?) {
         }
 
         // An used card being "archived" probably is the most sensible way to map "voided"
-        archiveStatus = try {
-            if (jsonObject.getBoolean("voided")) 1 else 0
-        } catch (ignored: JSONException) {
-            0
-        }
+        archiveStatus =
+            try {
+                if (jsonObject.getBoolean("voided")) 1 else 0
+            } catch (ignored: JSONException) {
+                0
+            }
 
         // Append type-specific info to the pass
 
         // Find the relevant pass type and parse it
         for (passType in listOf("boardingPass", "coupon", "eventTicket", "generic")) {
             try {
-                var extraText = parsePassJSONPassFields(
-                    jsonObject.getJSONObject(passType),
-                    locale
-                )
+                var extraText =
+                    parsePassJSONPassFields(
+                        jsonObject.getJSONObject(passType),
+                        locale,
+                    )
 
                 noteText.append("\n\n")
                 noteText.append(extraText)
 
                 break
-            } catch (ignored: JSONException) {}
+            } catch (ignored: JSONException) {
+            }
         }
 
         note = noteText.toString()
     }
 
-    /* Return success or failure */
+    // Return success or failure
     private fun parsePassJSONBarcodeField(barcodeInfo: JSONObject) {
         val format = barcodeInfo.getString("format")
 
         // We only need to check these 4 formats as no other options are valid in the PkPass spec
-        barcodeType = when(format) {
-            "PKBarcodeFormatQR" -> CatimaBarcode.fromBarcode(BarcodeFormat.QR_CODE)
-            "PKBarcodeFormatPDF417" -> CatimaBarcode.fromBarcode(BarcodeFormat.PDF_417)
-            "PKBarcodeFormatAztec" -> CatimaBarcode.fromBarcode(BarcodeFormat.AZTEC)
-            "PKBarcodeFormatCode128" -> CatimaBarcode.fromBarcode(BarcodeFormat.CODE_128)
-            else -> throw IllegalArgumentException("No valid barcode type")
-        }
+        barcodeType =
+            when (format) {
+                "PKBarcodeFormatQR" -> CatimaBarcode.fromBarcode(BarcodeFormat.QR_CODE)
+                "PKBarcodeFormatPDF417" -> CatimaBarcode.fromBarcode(BarcodeFormat.PDF_417)
+                "PKBarcodeFormatAztec" -> CatimaBarcode.fromBarcode(BarcodeFormat.AZTEC)
+                "PKBarcodeFormatCode128" -> CatimaBarcode.fromBarcode(BarcodeFormat.CODE_128)
+                else -> throw IllegalArgumentException("No valid barcode type")
+            }
 
         try {
             cardId = barcodeInfo.getString("altText")
@@ -366,7 +392,10 @@ class PkpassParser(context: Context, uri: Uri?) {
         }
     }
 
-    private fun parsePassJSONPassFields(fieldsParent: JSONObject, locale: String?): String {
+    private fun parsePassJSONPassFields(
+        fieldsParent: JSONObject,
+        locale: String?,
+    ): String {
         // These fields contain a lot of info on where we're supposed to display them, but Catima doesn't really have anything for that
         // So for now, throw them all into the description field in a logical order
         val noteContents: MutableList<String> = ArrayList()
@@ -411,7 +440,10 @@ class PkpassParser(context: Context, uri: Uri?) {
         return output.toString()
     }
 
-    private fun parsePassJSONPassField(field: JSONObject, locale: String?): String {
+    private fun parsePassJSONPassField(
+        field: JSONObject,
+        locale: String?,
+    ): String {
         // Value may be a localizable string, a date or a number. So let's try to parse it as a date first
 
         var value = getTranslation(field.getString("value"), locale)
@@ -425,15 +457,16 @@ class PkpassParser(context: Context, uri: Uri?) {
         if (field.has("currencyCode")) {
             val valueCurrency = Currency.getInstance(field.getString("currencyCode"))
 
-            value = Utils.formatBalance(
-                mContext,
-                Utils.parseBalance(value, valueCurrency),
-                valueCurrency
-            )
+            value =
+                Utils.formatBalance(
+                    mContext,
+                    Utils.parseBalance(value, valueCurrency),
+                    valueCurrency,
+                )
         } else if (field.has("numberStyle")) {
             if (field.getString("numberStyle") == "PKNumberStylePercent") {
                 // FIXME: Android formatting string
-                value = "${value}%"
+                value = "$value%"
             }
         }
 

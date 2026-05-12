@@ -32,8 +32,14 @@ import kotlin.math.abs
  * @param textColor          (optional) color to use for text.
  */
 class LetterBitmap(
-    context: Context, displayName: String, key: String, tileLetterFontSize: Int,
-    width: Int, height: Int, backgroundColor: Int?, textColor: Int?
+    context: Context,
+    displayName: String,
+    key: String,
+    tileLetterFontSize: Int,
+    width: Int,
+    height: Int,
+    backgroundColor: Int?,
+    textColor: Int?,
 ) {
     /**
      * A {@link Bitmap} that contains a letter used in the English
@@ -48,13 +54,14 @@ class LetterBitmap(
     private val mColor: Int
 
     init {
-        val paint = TextPaint().apply {
-            color = textColor ?: Color.WHITE
-            textAlign = Paint.Align.CENTER
-            isAntiAlias = true
-            textSize = tileLetterFontSize.toFloat()
-            typeface = Typeface.defaultFromStyle(Typeface.BOLD)
-        }
+        val paint =
+            TextPaint().apply {
+                color = textColor ?: Color.WHITE
+                textAlign = Paint.Align.CENTER
+                isAntiAlias = true
+                textSize = tileLetterFontSize.toFloat()
+                typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+            }
 
         mColor = backgroundColor ?: getDefaultColor(context, key)
 
@@ -74,7 +81,7 @@ class LetterBitmap(
 
         Log.d(
             "LetterBitmap",
-            "using sequence $firstChar to render first char which has length ${firstChar.length}"
+            "using sequence $firstChar to render first char which has length ${firstChar.length}",
         )
 
         Canvas().apply {
@@ -85,22 +92,22 @@ class LetterBitmap(
             paint.getTextBounds(firstChar, 0, firstChar.length, bounds)
             drawText(
                 firstChar,
-                0, firstChar.length,
-                width / 2.0f, (height - (bounds.bottom + bounds.top)) / 2.0f,
-                paint
+                0,
+                firstChar.length,
+                width / 2.0f,
+                (height - (bounds.bottom + bounds.top)) / 2.0f,
+                paint,
             )
         }
     }
 
+    /**
+     * @return background color used for letter title.
+     */
     val backgroundColor: Int
-        /**
-         * @return background color used for letter title.
-         */
         get() = mColor
-    
-    fun getLetterTile(): Bitmap {
-        return letterTile
-    }
+
+    fun getLetterTile(): Bitmap = letterTile
 
     companion object {
         /**
@@ -108,22 +115,26 @@ class LetterBitmap(
          * @return A new or previously chosen color for `key` used as the
          * tile background color
          */
-        private fun pickColor(key: String, colors: TypedArray): Int {
+        private fun pickColor(
+            key: String,
+            colors: TypedArray,
+        ): Int {
             // String.hashCode() is not supposed to change across java versions, so
             // this should guarantee the same key always maps to the same color
             val color = abs(key.hashCode()) % colors.length()
             return colors.getColor(color, Color.BLACK)
         }
 
-        private fun isAlphabetical(string: String): Boolean {
-            return string.matches("[a-zA-Z0-9]*".toRegex())
-        }
+        private fun isAlphabetical(string: String): Boolean = string.matches("[a-zA-Z0-9]*".toRegex())
 
         /**
          * Determine the color which the letter tile will use if no default
          * color is provided.
          */
-        fun getDefaultColor(context: Context, key: String): Int {
+        fun getDefaultColor(
+            context: Context,
+            key: String,
+        ): Int {
             val res = context.resources
 
             val colors = res.obtainTypedArray(R.array.letter_tile_colors)

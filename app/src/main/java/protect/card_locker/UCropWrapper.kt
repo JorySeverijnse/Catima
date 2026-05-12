@@ -60,22 +60,24 @@ class UCropWrapper : UCropActivity() {
         controls.children.firstOrNull { it is AppCompatImageView }?.let {
             // everything gathered and are as expected, now perform color patching
             Utils.patchColors(this)
-            val colorSurface = MaterialColors.getColor(
-                this,
-                com.google.android.material.R.attr.colorSurface,
-                ContextCompat.getColor(
+            val colorSurface =
+                MaterialColors.getColor(
                     this,
-                    R.color.md_theme_light_surface
+                    com.google.android.material.R.attr.colorSurface,
+                    ContextCompat.getColor(
+                        this,
+                        R.color.md_theme_light_surface,
+                    ),
                 )
-            )
-            val colorOnSurface = MaterialColors.getColor(
-                this,
-                com.google.android.material.R.attr.colorOnSurface,
-                ContextCompat.getColor(
+            val colorOnSurface =
+                MaterialColors.getColor(
                     this,
-                    R.color.md_theme_light_onSurface
+                    com.google.android.material.R.attr.colorOnSurface,
+                    ContextCompat.getColor(
+                        this,
+                        R.color.md_theme_light_onSurface,
+                    ),
                 )
-            )
 
             val controlsBackgroundImageDrawable = it.background
             controlsBackgroundImageDrawable.mutate()
@@ -84,7 +86,7 @@ class UCropWrapper : UCropActivity() {
                     colorOnSurface
                 } else {
                     colorSurface
-                }
+                },
             )
             it.background = controlsBackgroundImageDrawable
             states.setBackgroundColor(
@@ -92,7 +94,7 @@ class UCropWrapper : UCropActivity() {
                     colorSurface
                 } else {
                     colorOnSurface
-                }
+                },
             )
         }
     }

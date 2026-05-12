@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import protect.card_locker.databinding.BarcodeWidgetConfigureActivityBinding
 import protect.card_locker.preferences.Settings
 
-class BarcodeWidgetConfigureActivity : CatimaAppCompatActivity(),
+class BarcodeWidgetConfigureActivity :
+    CatimaAppCompatActivity(),
     LoyaltyCardCursorAdapter.CardAdapterListener {
-
     private lateinit var binding: BarcodeWidgetConfigureActivityBinding
     private lateinit var mDatabase: SQLiteDatabase
     private lateinit var mAdapter: LoyaltyCardCursorAdapter
@@ -24,7 +24,7 @@ class BarcodeWidgetConfigureActivity : CatimaAppCompatActivity(),
 
         appWidgetId = intent?.getIntExtra(
             AppWidgetManager.EXTRA_APPWIDGET_ID,
-            AppWidgetManager.INVALID_APPWIDGET_ID
+            AppWidgetManager.INVALID_APPWIDGET_ID,
         ) ?: AppWidgetManager.INVALID_APPWIDGET_ID
 
         if (appWidgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
@@ -70,10 +70,11 @@ class BarcodeWidgetConfigureActivity : CatimaAppCompatActivity(),
         val appWidgetManager = AppWidgetManager.getInstance(this)
         BarcodeWidget().onUpdate(this, appWidgetManager, intArrayOf(appWidgetId))
 
-        val resultValue = Intent().putExtra(
-            AppWidgetManager.EXTRA_APPWIDGET_ID,
-            appWidgetId
-        )
+        val resultValue =
+            Intent().putExtra(
+                AppWidgetManager.EXTRA_APPWIDGET_ID,
+                appWidgetId,
+            )
         setResult(RESULT_OK, resultValue)
         finish()
     }

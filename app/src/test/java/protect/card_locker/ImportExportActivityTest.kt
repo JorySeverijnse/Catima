@@ -17,21 +17,23 @@ import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class ImportExportActivityTest {
-
     private fun registerIntentHandler(handler: String) {
         // Add something that will 'handle' the given intent type
         val packageManager = RuntimeEnvironment.application.packageManager
 
-        val info = ResolveInfo().apply {
-            isDefault = true
-            activityInfo = ActivityInfo().apply {
-                applicationInfo = ApplicationInfo().apply {
-                    packageName = "does.not.matter"
-                }
-                name = "DoesNotMatter"
-                exported = true
+        val info =
+            ResolveInfo().apply {
+                isDefault = true
+                activityInfo =
+                    ActivityInfo().apply {
+                        applicationInfo =
+                            ApplicationInfo().apply {
+                                packageName = "does.not.matter"
+                            }
+                        name = "DoesNotMatter"
+                        exported = true
+                    }
             }
-        }
 
         val intent = Intent(handler)
 
@@ -49,7 +51,7 @@ class ImportExportActivityTest {
         divider: Int,
         title: Int,
         message: Int,
-        button: Int
+        button: Int,
     ) {
         val dividerView = activity.findViewById<View>(divider)
         val titleView = activity.findViewById<View>(title)
@@ -76,9 +78,12 @@ class ImportExportActivityTest {
         val activity = Robolectric.setupActivity(ImportExportActivity::class.java)
 
         checkVisibility(
-            activity, View.VISIBLE, R.id.dividerImportFilesystem,
-            R.id.importOptionFilesystemTitle, R.id.importOptionFilesystemExplanation,
-            R.id.importOptionFilesystemButton
+            activity,
+            View.VISIBLE,
+            R.id.dividerImportFilesystem,
+            R.id.importOptionFilesystemTitle,
+            R.id.importOptionFilesystemExplanation,
+            R.id.importOptionFilesystemButton,
         )
     }
 }
